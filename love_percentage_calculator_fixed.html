@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Love Percentage Calculator 💖</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;padding:20px;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;background:linear-gradient(135deg,#ffe0ed,#fff5fa);color:#702448}
+.card{width:100%;max-width:440px;background:#fff;border-radius:24px;padding:25px 20px;box-shadow:0 12px 35px #a62e6520;text-align:center}
+.heart{font-size:48px}h1{color:#e6387b;margin:8px 0;font-size:30px}.subtitle{color:#96677c;line-height:1.5;margin-bottom:24px}
+label{display:block;text-align:left;font-weight:bold;margin:14px 0 7px}
+input{display:block;width:100%;padding:14px;border:2px solid #f3c1d5;border-radius:12px;font-size:16px;outline:none}
+input:focus{border-color:#e6387b}
+button{width:100%;padding:14px;border:0;border-radius:12px;margin-top:18px;background:#e6387b;color:white;font-size:16px;font-weight:bold;cursor:pointer}
+#result{display:none;margin-top:24px;padding-top:20px;border-top:1px solid #f6d6e3}
+#pair{font-weight:bold;overflow-wrap:anywhere}.score{font-size:52px;color:#e6387b;font-weight:bold;margin:8px}
+.bar{font-family:monospace;font-size:17px;color:#d72f73;overflow-wrap:anywhere}
+.track{height:12px;background:#ffe0ed;border-radius:20px;overflow:hidden;margin:14px 0}
+#fill{height:100%;width:0;background:#e6387b;transition:width .6s}
+.panel{background:#fff3f8;padding:14px;border-radius:13px;text-align:left;margin-top:12px;line-height:1.5}
+.panel strong{color:#d72f73;display:block;margin-bottom:5px}
+.small{background:#fff0f6;color:#c92d6c;border:1px solid #f2c3d7}
+footer{font-size:11px;color:#a17b8d;line-height:1.5;margin-top:18px}
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="heart">💘</div>
+  <h1>Love Percentage Calculator</h1>
+  <p class="subtitle">Enter two names and discover your playful romantic match! 💕</p>
+
+  <form id="loveForm">
+    <label for="yourName">Your name</label>
+    <input id="yourName" type="text" placeholder="Enter your name" maxlength="50" required>
+    <label for="partnerName">Partner's name</label>
+    <input id="partnerName" type="text" placeholder="Enter your partner's name" maxlength="50" required>
+    <button type="submit">Calculate Love ❤️</button>
+  </form>
+
+  <section id="result" aria-live="polite">
+    <div id="pair"></div>
+    <div class="score" id="score">0%</div>
+    <div class="bar" id="bar">[░░░░░░░░░░] 0%</div>
+    <div class="track"><div id="fill"></div></div>
+    <div class="panel"><strong>🔮 Your romantic reading</strong><span id="reading"></span></div>
+    <div class="panel"><strong>💌 Relationship secret</strong><span id="tip"></span></div>
+    <button type="button" id="again" class="small">Try another pair 💗</button>
+  </section>
+  <footer>Just for fun! Real love depends on care, honesty, respect, and communication — not a number.</footer>
+</main>
+<script>
+(function () {
+  var form = document.getElementById('loveForm');
+  var result = document.getElementById('result');
+
+  function scoreNames(first, second) {
+    var pair = [first.toLowerCase().replace(/\s/g, ''), second.toLowerCase().replace(/\s/g, '')].sort().join('|');
+    var hash = 0;
+    for (var i = 0; i < pair.length; i++) {
+      hash = ((hash * 31) + pair.charCodeAt(i)) | 0;
+    }
+    return Math.abs(hash) % 101;
+  }
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    var first = document.getElementById('yourName').value.trim();
+    var second = document.getElementById('partnerName').value.trim();
+    if (!first || !second) {
+      alert('Please enter both names first.');
+      return;
+    }
+
+    var score = scoreNames(first, second);
+    document.getElementById('pair').textContent = first + ' 💗 ' + second;
+    document.getElementById('score').textContent = score + '%';
+    var blocks = Math.round(score / 10);
+    document.getElementById('bar').textContent = '[' + '█'.repeat(blocks) + '░'.repeat(10 - blocks) + '] ' + score + '%';
+    document.getElementById('fill').style.width = score + '%';
+
+    var message;
+    if (score >= 90) message = 'Wow, a super-cute match in our name game! Keep that spark glowing. ✨';
+    else if (score >= 75) message = 'A lovely romantic vibe! Shared adventures and honest talks can make the bond stronger. 💖';
+    else if (score >= 50) message = 'There may be a sweet spark! Get to know each other and let things grow naturally. 🌷';
+    else if (score >= 25) message = 'An interesting combination! Every relationship has its own rhythm and surprises. 😊';
+    else message = 'A plot twist from the name stars! This score is only a game; real chemistry cannot be calculated from names. 🌈';
+    document.getElementById('reading').textContent = message;
+    document.getElementById('tip').textContent = 'Listen to each other, be honest, respect boundaries, and remember small thoughtful gestures. How you treat each other matters much more than any percentage. 💌';
+
+    result.style.display = 'block';
+    result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  document.getElementById('again').addEventListener('click', function () {
+    form.reset();
+    result.style.display = 'none';
+    document.getElementById('fill').style.width = '0';
+    document.getElementById('yourName').focus();
+  });
+})();
+</script>
+</body>
+</html>
